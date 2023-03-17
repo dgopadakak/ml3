@@ -119,10 +119,6 @@ for tag in tags:
 
 # У этого набора данных нет класса.
 # Поэтому используем кластеризацию k-средних для заполнения класса(прост и достаточно точен)
-# Выбрано 2 кластера, потому что в описании данных указано,
-# что датчик был расположен на поле в значительно загрязненной зоне.
-# Таким образом, кластер 0 представляет собой ОЧЕНЬ сильно загрязненный,
-# а кластер 1 представляет собой сильно загрязненный.
 
 km = KMeans(n_clusters=2, random_state=1)
 new = df._get_numeric_data()
@@ -142,7 +138,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 param_grid = {'n_estimators': [10, 50, 100, 500],
               'max_depth': [5, 10, None]}
 
-# Создай random forest regressor
+# Создаем random forest regressor
 rf = RandomForestRegressor(random_state=0)
 
 grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, n_jobs=-1)
@@ -170,7 +166,7 @@ plt.legend()
 plt.show()
 
 # Определяем диапазон значений параметра
-max_depth_range = range(1, 21)
+max_depth_range = range(1, 20)
 
 train_scores, validation_scores = validation_curve(
     rf, X_train, y_train, param_name='max_depth', param_range=max_depth_range, cv=5, scoring='neg_mean_squared_error')
