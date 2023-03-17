@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,6 +10,14 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import learning_curve, validation_curve
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+
+
+def nan_to_zero(x):
+    if not isinstance(x, str):
+        if math.isnan(x):
+            return 0
+    return x
+
 
 # 1 ################################
 # Считываем набор данных
@@ -58,25 +67,21 @@ plt.show()
 
 # 4 ################################
 
-# Удаляем столбцы даты и времени
-df.drop(['Date', 'Time'], axis=1, inplace=True)
-df = df.drop('C6H6(GT)', axis=1)
+# Удаляем столбец даты
+df.drop(['timestamp'], axis=1, inplace=True)
+# df = df.drop('C6H6(GT)', axis=1)                                   закомментил, так как не понял зачем это
 
 # Заменяем отсутствующие значения 0
-# Сначала заполним это недостающее значение значением 0,
-# потому что, если заполним средним значением,
-# значение не будет репрезентативным,
-# потому что оно содержит значение -200.
-df = df.applymap(lambda x: x if x >= 0 else 0)
+df = df.applymap(lambda x: nan_to_zero(x))
 
 # Заменяем значения 0 на среднее значение/медиану
 
-for i in df[df['CO(GT)'] == 0].index:
-    df.loc[i, 'CO(GT)'] = df['CO(GT)'].mean()
-for i in df[df['PT08.S1(CO)'] == 0].index:
-    df.loc[i, 'PT08.S1(CO)'] = df['PT08.S1(CO)'].mean()
-for i in df[df['NMHC(GT)'] == 0].index:
-    df.loc[i, 'NMHC(GT)'] = df['NMHC(GT)'].mean()
+for i in df[df['max_floor'] == 0].index:
+    df.loc[i, 'max_floor'] = df['max_floor'].mean()
+for i in df[df['material'] == 0].index:
+    df.loc[i, 'material'] = df['material'].mean()
+for i in df[df['build_year'] == 0].index:
+    df.loc[i, 'build_year'] = df['build_year'].mean()
 for i in df[df['PT08.S2(NMHC)'] == 0].index:
     df.loc[i, 'PT08.S2(NMHC)'] = df['PT08.S2(NMHC)'].mean()
 for i in df[df['NOx(GT)'] == 0].index:
