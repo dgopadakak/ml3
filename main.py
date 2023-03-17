@@ -91,11 +91,10 @@ plt.show()
 
 # 4 ################################
 
-# Удаляем столбец даты
+# Удаляем столбец даты и еще несколько
 df.drop(['timestamp'], axis=1, inplace=True)
 df.drop(['product_type'], axis=1, inplace=True)
 df.drop(['sub_area'], axis=1, inplace=True)
-# df = df.drop('C6H6(GT)', axis=1)                                   закомментил, так как не понял зачем это
 
 # Заменяем отсутствующие значения 0
 df = df.applymap(lambda x: nan_to_zero(x))
@@ -120,7 +119,7 @@ for tag in tags:
 # У этого набора данных нет класса.
 # Поэтому используем кластеризацию k-средних для заполнения класса(прост и достаточно точен)
 
-km = KMeans(n_clusters=2, random_state=1)
+km = KMeans(n_clusters=3, random_state=1)
 new = df._get_numeric_data()
 km.fit(new)
 predict = km.predict(new)
